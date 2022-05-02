@@ -7,15 +7,13 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function test_the_application_returns_a_successful_response()
+    /** @test */
+    public function it_checks_stock_for_products_at_retailers()
     {
-        $response = $this->get('/');
+        $switch = Product::creat(['name' => 'Nintendo Swith']);
 
-        $response->assertStatus(200);
+        $bestBuy = Retailer::create(['name' => 'Best Buy']);
+
+        $this->assertFalse($switch->inStock());
     }
 }
