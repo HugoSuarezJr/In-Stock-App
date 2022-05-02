@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Product;
 use App\Models\Retailer;
+use App\Models\Stock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,5 +20,14 @@ class ExampleTest extends TestCase
         $bestBuy = Retailer::create(['name' => 'Best Buy']);
 
         $this->assertFalse($switch->inStock());
+
+        $stock = new Stock([
+            'price' => 1000,
+            'url' => 'http://foo.com',
+            'sku' => '12345',
+            'in_stock' => true
+        ]);
+
+        $bestBuy->addStock($switch, $stock);
     }
 }
