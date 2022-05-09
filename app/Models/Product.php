@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -14,7 +13,7 @@ class Product extends Model
 
     public function inStock()
     {
-        return $this->stock()->where('in-stock', true)->exists();
+        return $this->stock()->where('in_stock', true)->exists();
     }
 
     public function stock()
