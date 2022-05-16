@@ -23,22 +23,5 @@ class ProductTest extends TestCase
 
             $this->assertTrue($product->inStock());
         });
-
-        // $switch = Product::create(['name' => 'Nintedno Switch']);
-
-        // $bestBuy = Retailer::create(['name' => ' Best Buy']);
-
-        // $this->assertFalse($switch->inStock());
-
-        // $stock = new Stock([
-        //     'price' => 10000,
-        //     'url' => 'http://foo.com',
-        //     'sku' => 12345,
-        //     'in_stock' => true
-        // ]);
-
-        // $bestBuy->addStock($switch, $stock);
-
-        // $this->assertTrue($switch->inStock());
     }
 }
