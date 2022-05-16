@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Facades\App\Clients\ClientFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Stock extends Model
