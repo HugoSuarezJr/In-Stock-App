@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-
-use Illuminate\Support\Str;
+use Facades\App\Clients\ClientFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Stock extends Model
@@ -16,16 +15,9 @@ class Stock extends Model
 
     public function track()
     {
-        $class = "App\\Clients\\" . Str::studly($this->retailer->name);
-
-        $status = (new $class)->checkAvailability($this);
-
-        // if ($this->retailer->name === 'Best Buy') {
-        //     $status = (new BestBuy())->checkAvailability($this);
-        // }
-        // if ($this->retailer->name === 'Target') {
-        //     $status = (new Target())->checkAvailability($this);
-        // }
+        $status = $this->retailer
+            ->client()
+            ->checkAvailability($this);
 
         $this->update([
             'in_stock' => $status->available,
