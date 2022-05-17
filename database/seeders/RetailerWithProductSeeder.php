@@ -16,7 +16,7 @@ class RetailerWithProductSeeder extends Seeder
      */
     public function run()
     {
-        $switch = Product::create(['name' => 'Nintendo Switch']);
+        $switch = Product::create(['name' => 'DJI Mavic Air 2']);
 
         $bestBuy = Retailer::create(['name' => 'Best Buy']);
 
