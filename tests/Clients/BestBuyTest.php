@@ -6,6 +6,7 @@ use App\Clients\BestBuy;
 use App\Models\Stock;
 use Database\Seeders\RetailerWithProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 use function PHPUnit\Framework\assertTrue;
@@ -35,4 +36,16 @@ class BestBuyTest extends TestCase
         }
         assertTrue(true);
     }
+
+    /** @test */
+    function it_creates_the_proper_stock_status_response()
+    {
+        Http::fake(fn() => ['salePrice' => 299.99, 'onlineAvailability' => true]);
+
+        $stockStatus = (new BestBuy())->checkAvailability(new Stock);
+
+        $this->assertEquals(29999, $stockStatus->price);
+        $this->assertTrue($stockStatus->available);
+    }
+
 }
