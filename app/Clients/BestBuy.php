@@ -11,8 +11,6 @@ class BestBuy implements Client
     {
         $results = Http::get($this->endpoint($stock->sku))->json();
 
-        unset($results['salePrice']);
-
         return new StockStatus(
             $results['onlineAvailability'],
             $this->dollarsToCents($results['salePrice'])
