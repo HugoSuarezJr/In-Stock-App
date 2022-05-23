@@ -32,7 +32,7 @@ class BestBuyTest extends TestCase
         try {
             (new BestBuy())->checkAvailability($stock);
         } catch (\Exception $e) {
-            $this->fail('Failed to track the BestBuy API properly.');
+            $this->fail('Failed to track the BestBuy API properly. ' . $e->getMessage());
         }
         assertTrue(true);
     }
