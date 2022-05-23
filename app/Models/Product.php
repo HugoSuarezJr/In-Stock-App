@@ -8,7 +8,9 @@ class Product extends Model
 {
     public function track()
     {
-        $this->stock->each->track();
+        $this->stock->each->track(
+            fn($stock) => $this->recordHistory($stock)
+        );
     }
 
     public function inStock()

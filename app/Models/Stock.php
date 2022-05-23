@@ -12,7 +12,7 @@ class Stock extends Model
         'in_stock' => 'boolean'
     ];
 
-    public function track()
+    public function track($callback = null)
     {
         $status = $this->retailer
             ->client()
@@ -23,9 +23,7 @@ class Stock extends Model
             'price' => $status->price
         ]);
 
-        $this->product->recordHistory($this);
-
-        // $this->recordHistory();
+        $callback && $callback($this);
     }
 
     public function retailer()
