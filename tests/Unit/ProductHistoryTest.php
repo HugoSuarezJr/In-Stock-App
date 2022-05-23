@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\History;
+use App\Models\Product;
 use Database\Seeders\RetailerWithProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -16,19 +17,18 @@ class ProductHistoryTest extends TestCase
     /** @test */
     function it_records_history_each_time_stock_is_tracked()
     {
-        // given I have stock at a retailer
         $this->seed(RetailerWithProductSeeder::class);
 
         Http::fake(fn() => ['salePrice' => 99, 'onlineAvailability' => true]);
 
         $this->assertEquals(0, History::count());
-        // if I track that stock
-        $stock = tap(Stock::first())->track();
 
-        // a new history entry should be created
+        $product = tap(Product::first())->track();
+
         $this->assertEquals(1, History::count());
 
         $history = History::first();
+        $stock = $product->stock[0];
 
         $this->assertEquals($stock->price, $history->price);
         $this->assertEquals($stock->in_stock, $history->in_stock);
