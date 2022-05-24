@@ -2,15 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Clients\StockStatus;
 use App\Models\Product;
-use App\Models\Retailer;
-use App\Models\Stock;
 use App\Models\User;
+use App\Notifications\ImportantStockUpdate;
 use Database\Seeders\RetailerWithProductSeeder;
-use Facades\App\Clients\ClientFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -18,14 +14,25 @@ class TrackCommandTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    protected function setUp():void
+    {
+        parent::setUp();
+
+        Notification::fake();
+
+        $this->seed(RetailerWithProductSeeder::class);
+    }
+
     public function test_it_tracks_product_stock()
     {
-        $this->seed(RetailerWithProductSeeder::class);
-
         $this->assertFalse(Product::first()->inStock());
 
-        ClientFactory::shouldReceive('make->checkAvailability')
-            ->andReturn(new StockStatus($available = true, $price = 29900));
+        $this->mockClientRequest();
 
         $this->artisan('track')
             ->expectsOutput("All done!");
@@ -34,22 +41,22 @@ class TrackCommandTest extends TestCase
     }
 
     /** @test */
-    function it_notifies_the_user_when_the_stock_changes_in_a_notable_way()
+    function it_does_not_notify_when_the_stock_remains_unavailable()
     {
-        Notification::fake();
-        // Given I have a user
-        $user = User::factory()->create(['email' => 'HugoSuarez@example.com']);
-        // And a product
-        $this->seed(RetailerWithProductSeeder::class);
+        $this->mockClientRequest(false);
 
-        ClientFactory::shouldReceive('make->checkAvailability')
-            ->andReturn(new StockStatus($available = true, $price = 29900));
-        // When I track that product
         $this->artisan('track');
-        // If the stock changes in a notable way after being tracked
 
-        // Then the user should be notified.\
+        Notification::assertNothingSent();
+    }
 
-        Notification::assertSentTo($user, ImportantStockUpdate::class);
+    /** @test */
+    function it_notifies_the_user_when_the_stock_is_now_available()
+    {
+        $this->mockClientRequest();
+
+        $this->artisan('track');
+
+        Notification::assertSentTo(User::first(), ImportantStockUpdate::class);
     }
 }
