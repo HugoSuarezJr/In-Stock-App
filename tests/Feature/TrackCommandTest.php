@@ -12,28 +12,15 @@ class TrackCommandTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Setup the test environment.
-     *
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Notification::fake();
-
-        $this->seed(RetailerWithProductSeeder::class);
-    }
-
     public function test_it_tracks_product_stock()
     {
+        $this->seed(RetailerWithProductSeeder::class);
+
         $this->assertFalse(Product::first()->inStock());
 
         $this->mockClientRequest();
 
-        $this->artisan('track')
-            ->expectsOutput("All done!");
+        $this->artisan('track');
 
         $this->assertTrue(Product::first()->inStock());
     }
